@@ -1,3 +1,2 @@
-MetaTrader5 >= 0.0.1
-time >= 0.0.1
-pandas >= 0.0.1
+MetaTrader5==5.0.4687
+pandas==2.2.3
