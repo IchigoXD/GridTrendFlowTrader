@@ -1,6 +1,6 @@
 import MetaTrader5 as mt5
 import time
-from mt5_trade_functions import market_order, close_all_positions
+from scripts.mt5_trade_functions import market_order, close_all_positions
 import json
 
 def load_config(file_path):
