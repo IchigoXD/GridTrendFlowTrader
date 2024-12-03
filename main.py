@@ -16,7 +16,7 @@ if __name__ == '__main__':
     server = str(config['server'])
     GridSize = float(config['GridSize'])
     Volume = float(config['Volume'])
-    UserSymbol = mt5.symbol_info(str(config['symbol']))
+    SymbolName = str(config['symbol'])
 
     print(f"Username: {username}, Server: {server} GridSize: {GridSize}")
 
@@ -28,62 +28,69 @@ if __name__ == '__main__':
     
     nextSellOrderTrigerPrice = 0.00
     nextBuyOrderTrigerPrice = 0.00
-    symbol = UserSymbol
+    symbol = mt5.symbol_info(SymbolName)
+
     lastOrderPrice = symbol.ask
     nextBuyOrderTrigerPrice = symbol.ask
     nextSellOrderTrigerPrice = symbol.ask
 
 
     while True:
-        symbol = UserSymbol
-        if nextBuyOrderTrigerPrice < symbol.ask:
-            print('\nOrder Triggerd.')
+        symbol = mt5.symbol_info(SymbolName)
+        if nextBuyOrderTrigerPrice <= symbol.ask:
+            print(f'\n{time.asctime()}: Buy Order Triggerd on {nextBuyOrderTrigerPrice}')
             market_order(symbol.name,Volume,'buy')
             lastOrderPrice = nextBuyOrderTrigerPrice
             if nextBuyOrderTrigerPrice not in OrdersBuyPrices:
                 OrdersBuyPrices.append(nextBuyOrderTrigerPrice)
-            i = 0
+            i = 1
             noNewVal = True
             while noNewVal:
-                print('Try to set new buy')
                 nextBuyOrderTrigerPrice = lastOrderPrice + GridSize * i
+                print(f'{time.asctime()}: Trying to set new buy on {nextBuyOrderTrigerPrice}')
                 if nextBuyOrderTrigerPrice in OrdersBuyPrices:
+                    print(f'{time.asctime()}: Allready buy trade on {nextBuyOrderTrigerPrice}')
                     i = i + 1
                 else:
                     noNewVal = False
+            i = 1
             noNewVal = True
             while noNewVal:
-                print('Try to set new sell')
                 nextSellOrderTrigerPrice = lastOrderPrice - GridSize * i
+                print(f'{time.asctime()}: Try to set new sell on {nextBuyOrderTrigerPrice}')
                 if nextSellOrderTrigerPrice in OrdersSellPrices:
                     i = i + 1
+                    print(f'{time.asctime()}: Allready sell trade on {nextBuyOrderTrigerPrice}')
                 else:
                     noNewVal = False                    
 
-        if nextSellOrderTrigerPrice > symbol.ask :
-            print('\nOrder Triggerd.')
+        if nextSellOrderTrigerPrice >= symbol.bid :
+            print(f'\n{time.asctime()}: Sell Order Triggerd on {nextSellOrderTrigerPrice}')
             market_order(symbol.name,Volume,'sell')
             lastOrderPrice = nextSellOrderTrigerPrice
             if nextSellOrderTrigerPrice not in OrdersSellPrices:
                 OrdersSellPrices.append(nextSellOrderTrigerPrice)
-            i = 0
+            i = 1
             noNewVal = True
             while noNewVal:
-                print('Try to set new buy')
                 nextBuyOrderTrigerPrice = lastOrderPrice + GridSize * i
+                print(f'{time.asctime()}: Trying to set new buy on {nextBuyOrderTrigerPrice}')
                 if nextBuyOrderTrigerPrice in OrdersBuyPrices:
+                    print(f'{time.asctime()}: Allready buy trade on {nextBuyOrderTrigerPrice}')
                     i = i + 1
                 else:
                     noNewVal = False
-            noNewVal = True 
+            i = 1
+            noNewVal = True
             while noNewVal:
-                print('Try to set new sell')
                 nextSellOrderTrigerPrice = lastOrderPrice - GridSize * i
+                print(f'{time.asctime()}: Try to set new sell on {nextBuyOrderTrigerPrice}')
                 if nextSellOrderTrigerPrice in OrdersSellPrices:
                     i = i + 1
+                    print(f'{time.asctime()}: Allready sell trade on {nextBuyOrderTrigerPrice}')
                 else:
-                    noNewVal = False                   
+                    noNewVal = False                    
         
-        print(f'\r{time.asctime()}: NextBuy: {nextBuyOrderTrigerPrice}  NextSell: {nextSellOrderTrigerPrice}  Ask: {symbol.ask}  {OrdersBuyPrices}  {OrdersSellPrices}',end='')
+        print(f'\r{time.asctime()}: NextBuy: {nextBuyOrderTrigerPrice}  NextSell: {nextSellOrderTrigerPrice}  Ask: {symbol.ask}  Bid: {symbol.bid}  BuyOrders: {OrdersBuyPrices}  SellOrders: {OrdersSellPrices}',end='')
 
     print('Program End..')
