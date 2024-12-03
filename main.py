@@ -15,41 +15,27 @@ if __name__ == '__main__':
     password = str(config['password'])
     server = str(config['server'])
     GridSize = float(config['GridSize'])
+    Volume = float(config['Volume'])
+    UserSymbol = mt5.symbol_info(str(config['symbol']))
+
     print(f"Username: {username}, Server: {server} GridSize: {GridSize}")
 
-
-    print('Program Stratred....')
-    # open your own trading account: https://icmarkets.com/?camp=60457
-    login = username#88548079
-    #password = password
-    #server = 'MetaQuotes-Demo'
-
     mt5.initialize()
-    mt5.login(login, password, server)
-
-    """
-    Trading bot logic
-    
-    1) Opens a Trade on EURUSD 1 lot
-    2) Strategy waits 5 seconds and then closes the position
-    """
+    mt5.login(username, password, server)
 
     OrdersBuyPrices = []
     OrdersSellPrices = []
-    #GridSize = 0.5
-    Volume = 0.01
-    symbol = mt5.symbol_info("XAUUSD")
-
+    
     nextSellOrderTrigerPrice = 0.00
     nextBuyOrderTrigerPrice = 0.00
-
+    symbol = UserSymbol
     lastOrderPrice = symbol.ask
     nextBuyOrderTrigerPrice = symbol.ask
     nextSellOrderTrigerPrice = symbol.ask
 
 
     while True:
-        symbol = mt5.symbol_info("XAUUSD")
+        symbol = UserSymbol
         if nextBuyOrderTrigerPrice < symbol.ask:
             print('\nOrder Triggerd.')
             market_order(symbol.name,Volume,'buy')
