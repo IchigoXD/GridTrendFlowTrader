@@ -1,1 +1,1 @@
-python trading_bot.py
+python main.py
