@@ -4,5 +4,6 @@
     "server": "NordFX-Real",
     "GridSize": 1.0,
     "Volume": 0.01,
-    "symbol": "XAUUSD" 
+    "symbol": "XAUUSD",
+    "pipdelay": 0.3
 }

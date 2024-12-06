@@ -17,6 +17,7 @@ if __name__ == '__main__':
     GridSize = float(config['GridSize'])
     Volume = float(config['Volume'])
     SymbolName = str(config['symbol'])
+    pipdelay = int(config['pipdelay'])
 
     print(f"Username: {username}, Server: {server} GridSize: {GridSize}")
 
@@ -34,10 +35,9 @@ if __name__ == '__main__':
     nextBuyOrderTrigerPrice = symbol.ask
     nextSellOrderTrigerPrice = symbol.ask
 
-
     while True:
         symbol = mt5.symbol_info(SymbolName)
-        if nextBuyOrderTrigerPrice <= symbol.ask:
+        if nextBuyOrderTrigerPrice - pipdelay <= symbol.ask:
             print(f'\n{time.asctime()}: Buy Order Triggerd on {nextBuyOrderTrigerPrice}')
             market_order(symbol.name,Volume,'buy')
             lastOrderPrice = nextBuyOrderTrigerPrice
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                 else:
                     noNewVal = False                    
 
-        if nextSellOrderTrigerPrice >= symbol.bid :
+        if nextSellOrderTrigerPrice + pipdelay >= symbol.bid :
             print(f'\n{time.asctime()}: Sell Order Triggerd on {nextSellOrderTrigerPrice}')
             market_order(symbol.name,Volume,'sell')
             lastOrderPrice = nextSellOrderTrigerPrice
