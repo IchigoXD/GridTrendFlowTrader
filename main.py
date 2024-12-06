@@ -2,6 +2,7 @@ import MetaTrader5 as mt5
 import time
 from scripts.mt5_trade_functions import market_order, close_all_positions
 import json
+import pdb
 
 def load_config(file_path):
     with open(file_path, 'r') as file:
@@ -17,7 +18,7 @@ if __name__ == '__main__':
     GridSize = float(config['GridSize'])
     Volume = float(config['Volume'])
     SymbolName = str(config['symbol'])
-    pipdelay = int(config['pipdelay'])
+    pipdelay = float(config['pipdelay'])
 
     print(f"Username: {username}, Server: {server} GridSize: {GridSize}")
 
@@ -36,6 +37,7 @@ if __name__ == '__main__':
     nextSellOrderTrigerPrice = symbol.ask
 
     while True:
+        pdb.set_trace()
         symbol = mt5.symbol_info(SymbolName)
         if nextBuyOrderTrigerPrice - pipdelay <= symbol.ask:
             print(f'\n{time.asctime()}: Buy Order Triggerd on {nextBuyOrderTrigerPrice}')
@@ -90,7 +92,5 @@ if __name__ == '__main__':
                     print(f'{time.asctime()}: Allready sell trade on {nextBuyOrderTrigerPrice}')
                 else:
                     noNewVal = False                    
-        
-        print(f'\r{time.asctime()}: NextBuy: {nextBuyOrderTrigerPrice}  NextSell: {nextSellOrderTrigerPrice}  Ask: {symbol.ask}  Bid: {symbol.bid}  BuyOrders: {OrdersBuyPrices}  SellOrders: {OrdersSellPrices}',end='')
 
     print('Program End..')
