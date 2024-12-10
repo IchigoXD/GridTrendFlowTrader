@@ -2,11 +2,15 @@ import MetaTrader5 as mt5
 import time
 from scripts.mt5_trade_functions import market_order, close_all_positions
 import json
-import pdb
 
 def load_config(file_path):
     with open(file_path, 'r') as file:
         return json.load(file)
+
+
+
+
+
 
 if __name__ == '__main__':
 
@@ -25,6 +29,10 @@ if __name__ == '__main__':
     mt5.initialize()
     mt5.login(username, password, server)
 
+
+
+    
+
     OrdersBuyPrices = []
     OrdersSellPrices = []
     
@@ -37,18 +45,18 @@ if __name__ == '__main__':
     nextSellOrderTrigerPrice = symbol.ask
 
     while True:
-        pdb.set_trace()
+        print(mt5.last_error())
         symbol = mt5.symbol_info(SymbolName)
-        if nextBuyOrderTrigerPrice - pipdelay <= symbol.ask:
-            print(f'\n{time.asctime()}: Buy Order Triggerd on {nextBuyOrderTrigerPrice}')
-            market_order(symbol.name,Volume,'buy')
+        if nextBuyOrderTrigerPrice - pipdelay <= symbol.bid:
+            print(f'\n{time.asctime()}: Buy Order on {nextBuyOrderTrigerPrice} with delay {nextBuyOrderTrigerPrice - pipdelay} trggired. delta: {nextBuyOrderTrigerPrice - pipdelay - symbol.ask}')
+            market_order(symbol.name,Volume,'sell')
             lastOrderPrice = nextBuyOrderTrigerPrice
             if nextBuyOrderTrigerPrice not in OrdersBuyPrices:
                 OrdersBuyPrices.append(nextBuyOrderTrigerPrice)
             i = 1
             noNewVal = True
             while noNewVal:
-                nextBuyOrderTrigerPrice = lastOrderPrice + GridSize * i
+                nextBuyOrderTrigerPrice = lastOrderPrice + GridSize * i 
                 print(f'{time.asctime()}: Trying to set new buy on {nextBuyOrderTrigerPrice}')
                 if nextBuyOrderTrigerPrice in OrdersBuyPrices:
                     print(f'{time.asctime()}: Allready buy trade on {nextBuyOrderTrigerPrice}')
@@ -66,9 +74,9 @@ if __name__ == '__main__':
                 else:
                     noNewVal = False                    
 
-        if nextSellOrderTrigerPrice + pipdelay >= symbol.bid :
-            print(f'\n{time.asctime()}: Sell Order Triggerd on {nextSellOrderTrigerPrice}')
-            market_order(symbol.name,Volume,'sell')
+        if nextSellOrderTrigerPrice + pipdelay >= symbol.ask :
+            print(f'\n{time.asctime()}: Sell Order on {nextSellOrderTrigerPrice} with delay {nextSellOrderTrigerPrice + pipdelay} trigged. delta: {nextSellOrderTrigerPrice + pipdelay - symbol.bid}')
+            market_order(symbol.name,Volume,'buy')
             lastOrderPrice = nextSellOrderTrigerPrice
             if nextSellOrderTrigerPrice not in OrdersSellPrices:
                 OrdersSellPrices.append(nextSellOrderTrigerPrice)
