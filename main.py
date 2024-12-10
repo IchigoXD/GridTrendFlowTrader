@@ -8,10 +8,6 @@ def load_config(file_path):
         return json.load(file)
 
 
-
-
-
-
 if __name__ == '__main__':
 
     config = load_config('config.json')
@@ -29,10 +25,6 @@ if __name__ == '__main__':
     mt5.initialize()
     mt5.login(username, password, server)
 
-
-
-    
-
     OrdersBuyPrices = []
     OrdersSellPrices = []
     
@@ -47,9 +39,9 @@ if __name__ == '__main__':
     while True:
         print(mt5.last_error())
         symbol = mt5.symbol_info(SymbolName)
-        if nextBuyOrderTrigerPrice - pipdelay <= symbol.bid:
+        if nextBuyOrderTrigerPrice - pipdelay <= symbol.ask:
             print(f'\n{time.asctime()}: Buy Order on {nextBuyOrderTrigerPrice} with delay {nextBuyOrderTrigerPrice - pipdelay} trggired. delta: {nextBuyOrderTrigerPrice - pipdelay - symbol.ask}')
-            market_order(symbol.name,Volume,'sell')
+            market_order(symbol.name,Volume,'buy')
             lastOrderPrice = nextBuyOrderTrigerPrice
             if nextBuyOrderTrigerPrice not in OrdersBuyPrices:
                 OrdersBuyPrices.append(nextBuyOrderTrigerPrice)
@@ -74,9 +66,9 @@ if __name__ == '__main__':
                 else:
                     noNewVal = False                    
 
-        if nextSellOrderTrigerPrice + pipdelay >= symbol.ask :
+        if nextSellOrderTrigerPrice + pipdelay >= symbol.bid :
             print(f'\n{time.asctime()}: Sell Order on {nextSellOrderTrigerPrice} with delay {nextSellOrderTrigerPrice + pipdelay} trigged. delta: {nextSellOrderTrigerPrice + pipdelay - symbol.bid}')
-            market_order(symbol.name,Volume,'buy')
+            market_order(symbol.name,Volume,'sell')
             lastOrderPrice = nextSellOrderTrigerPrice
             if nextSellOrderTrigerPrice not in OrdersSellPrices:
                 OrdersSellPrices.append(nextSellOrderTrigerPrice)
